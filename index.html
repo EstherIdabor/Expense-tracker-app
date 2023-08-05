@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/ac8c116395.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <section class="welcome--page hidden">
+      <div class="welcome--page_content container">
+        <div class="welcome--page_image">
+          <img src="img/undraw_instant_information_re_c5v5.svg" alt="" />
+        </div>
+        <div class="welcome--page_text">
+          <h1 class="weighted-text">
+            Manage your finances with Esther's Expense tracker
+          </h1>
+          <div class="welcome--page_textparagraph">
+            <h2 class="semi-weighted-text">
+              Don't have an account yet? <a href="#"> Sign up here</a>
+            </h2>
+            <h2 class="semi-weighted-text">
+              Already have an account? <a href="">Sign in here</a>
+            </h2>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="registration hidden">
+      <form class="form Registration-form">
+        <div class="form-control">
+          <label class="" for="fname">First Name:</label>
+          <input type="text" id="fname" name="fname" placeholder="e.g Esther" />
+          <small></small>
+        </div>
+        <div class="form-control">
+          <label for="lname">Last Name:</label>
+          <input
+            type="text"
+            id="lname"
+            name="lname"
+            placeholder="e.g Chukwuyem"
+          />
+          <small></small>
+        </div>
+        <div class="form-control">
+          <label for="password">Password:</label>
+          <input
+            type="number"
+            id="password"
+            name="password"
+            placeholder="Enter a 4 digit number"
+          />
+          <small></small>
+        </div>
+        <div class="form-button">
+          <button class="submit-button" type="submit">Sign Up</button>
+        </div>
+      </form>
+    </section>
+    <section class="login hidden">
+      <form class="form login-form">
+        <div class="form-control">
+          <label class="" for="Fname">Full Name:</label>
+          <input
+            type="text"
+            id="Fname"
+            name="Fname"
+            placeholder="e.g Esther Idabor"
+          />
+          <small></small>
+        </div>
+        <div class="form-control">
+          <label for="password">Password:</label>
+          <input
+            type="number"
+            id="login-password"
+            name="login-assword"
+            placeholder="Enter your digit pin"
+          />
+          <small></small>
+        </div>
+        <div class="form-button">
+          <button class="submit-button" type="submit">Login</button>
+        </div>
+      </form>
+    </section>
+    <main class="container homepage">
+      <header>
+        <div class="welcome-div">
+          <h1 class="weighted-text">Hello, Esther</h1>
+          <p class="normal-text">Welcome back to your page</p>
+        </div>
+        <nav>
+          <ul>
+            <li><a class="nav-link year" href="#">This year</a></li>
+            <li><a class="nav-link month" href="#">This month</a></li>
+            <li><a class="nav-link week" href="#">This week</a></li>
+          </ul>
+        </nav>
+      </header>
+      <div class="dashboard">
+        <div class="dashboard--budget">
+          <h2 class="secondary-header">Budget</h2>
+          <p class="budget-value weighted-text">$0.00</p>
+        </div>
+        <div class="dashboard--expense">
+          <h2 class="secondary-header">Expense</h2>
+          <p class="expense-value weighted-text">$0.00</p>
+        </div>
+      </div>
+      <div class="budget--summary">
+        <div class="budget--summary_title">
+          <h2 class="budget-timeframe semi-weighted-text">Monthly Budget</h2>
+          <p class="budget-timeframe-amount normal-text"></p>
+        </div>
+        <div class="budget--summary_amount">
+          <p class="expense-percent red-text">Expense: 0%</p>
+          <p class="budget-used normal-text"></p>
+        </div>
+      </div>
+      <div class="Expense-budget-entry">
+        <button class="add-budget semi-weighted-text">Change Budget</button>
+
+        <button class="add-expense semi-weighted-text">Add Expense</button>
+      </div>
+      <div class="transaction">
+        <div>
+          <h2 class="weighted-text">Transactions</h2>
+        </div>
+        <div class="expense-search">
+          <input
+            type="text"
+            id="search-input"
+            name="search-input"
+            placeholder="search"
+          />
+        </div>
+      </div>
+      <div class="Expense-list">
+        <!-- 
+        <div class="expense-container">
+          <div class="delete-button">
+          <button>Remove</button>
+          </div>
+          <div class="expense-item">
+          <div class="expense">
+            <h2 class="semi-weighted-text">Food</h2>
+            <p class="normal-text">14 April, 2019</p>
+          </div>
+          <div class="amount">
+            <h2 class="semi-weighted-text">$450</h2>
+          </div>
+        </div>
+      </div>
+        
+        <div class="expense-item">
+          <div class="expense">
+            <h2 class="semi-weighted-text">Food</h2>
+            <p class="normal-text">14 April, 2019</p>
+          </div>
+          <div class="amount">
+            <h2 class="semi-weighted-text">$450</h2>
+          </div>
+        </div>
+        <div class="expense-item">
+          <div class="expense">
+            <h2 class="semi-weighted-text">Food</h2>
+            <p class="normal-text">14 April, 2019</p>
+          </div>
+          <div class="amount">
+            <h2 class="semi-weighted-text">$450</h2>
+          </div>
+        </div> -->
+      </div>
+    </main>
+    <!-- Budget modal -->
+    <section class="modal-section-budget hidden">
+      <div class="modal modal-budget">
+        <div class="close-icon-div budget-close-icon">
+          <button class="close-icon">
+            <i class="fa-sharp fa-solid fa-xmark fa-xl"></i>
+          </button>
+        </div>
+        <form class="budget-form">
+          <div class="budget-form-control">
+            <label for="budget">Enter your budget:</label>
+            <input type="number" id="budget" name="budget" />
+            <small class="hidden">This field is required</small>
+          </div>
+          <div>
+            <label for="timeframe">Choose a timeframe:</label>
+            <select class="select-box" name="timeframe" id="timeframe">
+              <option value="Monthly">Monthly</option>
+              <option value="Yearly">Yearly</option>
+            </select>
+          </div>
+          <div class="modal-btn">
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Add an Expense modal -->
+    <section class="modal-section-expense hidden">
+      <div class="modal modal-expense">
+        <div class="close-icon-div expense-close-icon">
+          <button class="close-icon">
+            <i class="fa-sharp fa-solid fa-xmark fa-xl"></i>
+          </button>
+        </div>
+        <form class="expense-form">
+          <h2 class="semi-weighted-text">Add an Expense</h2>
+          <div>
+            <label for="expense-amount">Amount:</label>
+            <input
+              type="number"
+              id="expense-amount"
+              name="expense-amount"
+              placeholder="$"
+              required
+            />
+            <small></small>
+          </div>
+          <div>
+            <label for="expense-title">Category:</label>
+            <input
+              type="text"
+              id="expense-title"
+              name="expense-title"
+              minlength="3"
+              maxlength="15"
+              placeholder="E.g food, groceries, shoe"
+              required
+            />
+            <small></small>
+          </div>
+
+          <div>
+            <label for="expense-date">Date:</label>
+            <input type="date" id="expense-date" name="expense-date" />
+          </div>
+          <div class="modal-btn">
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Edit an expense   -->
+    <section class="modal-section-edit-expense hidden">
+      <div class="modal modal-edit-expense">
+        <div class="close-icon-div edit-expense-close-icon">
+          <button class="close-icon">
+            <i class="fa-sharp fa-solid fa-xmark fa-xl"></i>
+          </button>
+        </div>
+        <form class="edit-expense-form">
+          <h2 class="semi-weighted-text">Edit Expense:</h2>
+          <div>
+            <label for="edit-expense-amount">Amount:</label>
+            <input
+              type="number"
+              id="edit-expense-amount"
+              name="edit-expense-amount"
+              placeholder="$"
+              required
+            />
+            <small></small>
+          </div>
+          <div>
+            <label for="edit-expense-title">Category:</label>
+            <input
+              type="text"
+              id="edit-expense-title"
+              name="edit-expense-title"
+              minlength="3"
+              maxlength="15"
+              placeholder="E.g food, groceries, shoe"
+              required
+            />
+            <small></small>
+          </div>
+
+          <div>
+            <label for="edit-expense-date">Date:</label>
+            <input
+              type="date"
+              id="edit-expense-date"
+              name="edit-expense-date"
+            />
+          </div>
+          <div class="modal-btn">
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+    </section>
+    <div class="overlay hidden"></div>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
