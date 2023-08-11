@@ -3,11 +3,13 @@
   --Budget-dashboard-color: hsla(241, 83%, 76%, 0.5);
   --time-mode: hsla(313, 0%, 90%, 1);
   --background-body: hsla(313, 0%, 95%, 1);
-  --blue: hsla(239, 55%, 45%, 1);
+  --blue: rgb(62, 64, 179);
   --Expense-dashboard-color: hsla(359, 83%, 76%, 0.5);
   --grey-text: hsl(0, 0%, 50%);
   --border-bottom: hsl(0, 0%, 70%);
   --red-text: hsl(3, 63%, 55%);
+  --light-blue: hsl(220, 100%, 77%);
+  --light-red: hsl(6, 100%, 74%);
 }
 
 *,
@@ -207,6 +209,7 @@ nav ul {
   width: 50%;
   border-radius: 1rem;
 }
+
 .add-budget {
   padding: 1rem;
   background-color: var(--blue);
@@ -264,10 +267,59 @@ nav ul {
   display: flex;
   justify-content: space-between;
   border-radius: 1rem;
-  padding: 1.5rem;
+  padding: 1rem;
   margin-bottom: 1rem;
 }
 
+.budget--summary__progress {
+  width: 90px;
+  height: 90px;
+  /* background-color: red; */
+  position: relative;
+}
+.outer {
+  width: 90px;
+  height: 90px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--light-blue);
+  box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+    -6px 6px 10px -1px var(--background-body);
+  border-radius: 50%;
+}
+.inner {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  /* border: 1px solid red; */
+  border-radius: 50%;
+  box-shadow: inset 4px 4px 6px -1px var(--grey-text),
+    inset -4px -4px 6px -1px rgba(255, 255, 255, 0.7),
+    -0.5px -0.5px 0px rgba(255, 255, 255, 1),
+    0.5px 0.5px 0px rgba(0, 0, 0, 0.15), 0px 12px 10px -10px rgba(0, 0, 0, 0.05);
+}
+#budget-percent {
+  font-weight: 900;
+}
+
+circle {
+  fill: none;
+  stroke: url(#GradientColor);
+  stroke-width: 10px;
+  stroke-dasharray: 245;
+  stroke-dashoffset: 0;
+}
+
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 /* ******MODAL ************** */
 .modal-section-budget,
 .modal-section-expense,
@@ -339,7 +391,7 @@ nav ul {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(1px);
   z-index: 1;
 }
 
@@ -355,6 +407,37 @@ nav ul {
 .budget-form-control small {
   display: none;
 }
+.confirm-delete {
+  position: absolute;
+  display: hidden;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 1.5rem;
+  background-color: var(--white);
+  border-radius: 1rem;
+  z-index: 100;
+}
+.delete-btns {
+  display: flex;
+  gap: 0.5rem;
+}
+.confirm-delete button {
+  color: #fff;
+  /* display: inline-block; */
+  border: 0;
+  width: 50%;
+  border-radius: 0.6rem;
+  padding: 0.5rem 0.5rem;
+  cursor: pointer;
+}
+.cancel-btn {
+  background-color: var(--light-red);
+}
+.continue-btn {
+  background-color: var(--light-blue);
+}
+
 /* Utility class */
 .secondary-header {
   font-size: clamp(1.2rem, 2.5vw, 1.5rem);

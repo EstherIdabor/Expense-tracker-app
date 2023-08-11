@@ -126,9 +126,28 @@ openBudgetModal.addEventListener("click", function () {
 });
 
 budgetCloseIcon.addEventListener("click", closeBudgetModal);
+
+/////////DELETE ICON
+const deleteModal = document.querySelector(".confirm-delete");
+
+const openDeleteModal = function () {
+  deleteModal.classList.remove("hidden");
+  overlay.classList.remove("hidden");
+};
+
+const closeDeleteModal = function () {
+  deleteModal.classList.add("hidden");
+  overlay.classList.add("hidden");
+};
+document.querySelector(".cancel-btn").addEventListener("click", function () {
+  closeDeleteModal();
+});
+
 overlay.addEventListener("click", function () {
   closeBudgetModal();
   closeExpenseModal();
+  closeEditExpenseModal();
+  closeDeleteModal();
 });
 
 openExpenseModal.addEventListener("click", function () {
@@ -176,69 +195,50 @@ budgetForm.addEventListener("submit", function (e) {
   }
 });
 
+// ////////////////EXPENSES
 const expenseList = document.querySelector(".Expense-list");
 const expenseDate = document.querySelector("#expense-date");
 expenseDate.valueAsDate = new Date();
 const expenseValue = document.querySelector(".expense-value");
 
 // Tentative fake data/////////////
-let expenseArr = [
-  {
-    Title: "food",
-    Amount: 234,
-    date: new Date("June 23, 2023").toLocaleDateString(),
-  },
-  {
-    Title: "fook",
-    Amount: 234,
-    date: new Date("July 17, 2022").toLocaleDateString(),
-  },
-  {
-    Title: "electricity",
-    Amount: 234,
-    date: new Date("July 21, 2021").toLocaleDateString(),
-  },
-  {
-    Title: "laundry",
-    Amount: 234,
-    date: new Date("July 20, 2020").toLocaleDateString(),
-  },
-  {
-    Title: "schoolfees",
-    Amount: 234,
-    date: new Date("July 23, 2023").toLocaleDateString(),
-  },
-];
+let expenseArr = [];
 
-const displayExpenseList = function () {
-  expenseArr.forEach((item) => {
-    expenseList.insertAdjacentHTML(
-      "afterbegin",
-      `
-        <div class="expense-container" id = "${item.id}">
-        <div class="modify-icon">
+const displayHtmlExpenseItem = function (item) {
+  let htmlExpenseItem = `
+  <div class="expense-container" id = "${item.id}">
+      <div class="modify-icon">
         <a href="#" class="edit-icon"><i class="fa-solid fa-pen-to-square" style="color: #254b8e;"></i></a>
         <a href="#" class="delete-icon"><i class="fa-solid fa-trash-can" style="color: #e75a61;"></i></a>
-        </div>
+      </div>
       <div class="expense-item">
-              <div class="expense">
-                <h2 class="semi-weighted-text">${item.Title}</h2>
-                <p class="normal-text">${item.date}</p>
-              </div>
-              <div class="amount">
-                <h2 class="semi-weighted-text">$${item.Amount}</h2>
-              </div>
-        </div>      
-      `
-    );
-  });
+        <div class="expense">
+        <h2 class="semi-weighted-text expense-item__Title">${item.Title}</h2>
+        <p class="normal-text expense-item__date">${item.date}</p>
+        </div>
+        <div class="amount">
+        <h2 class="semi-weighted-text expense-item__Amount">$${item.Amount}</h2>
+        </div>
+        </div> 
+  </div>      
+`;
+
+  return htmlExpenseItem;
+};
+
+const displayExpenseList = function () {
+  expenseList.innerHTML = "";
+  const expenseArrHtml = expenseArr.reduce((acc, currentEL) => {
+    return acc + displayHtmlExpenseItem(currentEL);
+  }, "");
+
+  expenseList.innerHTML = expenseArrHtml;
 };
 
 /////////////////////// EXPENSE MODAL////////////////
 let totalExpense = 0;
 
 const expenseForm = document.querySelector(".expense-form");
-
 const expenseAmount = document.querySelector("#expense-amount");
 const expenseTitle = document.querySelector("#expense-title");
 
@@ -263,8 +263,9 @@ expenseForm.addEventListener("submit", function (e) {
     Title: expenseTitleValue,
     Amount: expenseAmountValue,
     date: derivedDate,
-    id: timeStamp,
+    id: `${timeStamp}`,
   };
+
   expenseArr.unshift(expenseItem);
 
   let percentageExpenses = `${Math.round(
@@ -276,25 +277,9 @@ expenseForm.addEventListener("submit", function (e) {
   }
   expenseList.insertAdjacentHTML(
     "afterbegin",
-    `
-    <div class="expense-container" id='timestamp'>
-    <div class="modify-icon">
-    <a href="#" class="edit-icon"><i class="fa-solid fa-pen-to-square" style="color: #254b8e;"></i></a>
-    <a href="#" class="delete-icon"><i class="fa-solid fa-trash-can" style="color: #e75a61;"></i></a>
-    </div>
-  <div class="expense-item">
-          <div class="expense">
-            <h2 class="semi-weighted-text">${expenseTitleValue}</h2>
-            <p class="normal-text">${derivedDate}</p>
-          </div>
-          <div class="amount">
-            <h2 class="semi-weighted-text">$${expenseAmountValue}</h2>
-          </div>
-    </div>      
-  `
+    displayHtmlExpenseItem(expenseItem)
   );
   expenseValue.textContent = `${formatter.format(totalExpense)}`;
-  console.log(expenseArr);
   closeExpenseModal();
 });
 
@@ -307,25 +292,13 @@ searchInput.addEventListener("input", function (e) {
   let searchInputValue = searchInput.value;
   let inputLength = searchInputValue.length;
   expenseArr.forEach((item) => {
-    if (item.Title.toLowerCase().slice(0, inputLength) == searchInputValue) {
+    if (
+      item.Title.toLowerCase().slice(0, inputLength) ==
+      searchInputValue.toLowerCase()
+    ) {
       expenseList.insertAdjacentHTML(
         "afterbegin",
-        `
-        <div class="expense-container" id = "${item.id}">
-        <div class="modify-icon">
-        <a href="#" class="edit-icon"><i class="fa-solid fa-pen-to-square" style="color: #254b8e;"></i></a>
-        <a href="#" class="delete-icon"><i class="fa-solid fa-trash-can" style="color: #e75a61;"></i></a>
-        </div>
-      <div class="expense-item">
-              <div class="expense">
-                <h2 class="semi-weighted-text">${item.Title}</h2>
-                <p class="normal-text">${item.date}</p>
-              </div>
-              <div class="amount">
-                <h2 class="semi-weighted-text">$${item.Amount}</h2>
-              </div>
-        </div>      
-      `
+        displayHtmlExpenseItem(item)
       );
     }
   });
@@ -344,22 +317,7 @@ yearButton.addEventListener("click", function (e) {
     if (currentYear == new Date(item.date).getFullYear()) {
       expenseList.insertAdjacentHTML(
         "afterbegin",
-        `
-        <div class="expense-container" id = "${item.id}">
-        <div class="modify-icon">
-        <a href="#" class="edit-icon"><i class="fa-solid fa-pen-to-square" style="color: #254b8e;"></i></a>
-        <a href="#" class="delete-icon"><i class="fa-solid fa-trash-can" style="color: #e75a61;"></i></a>
-        </div>
-      <div class="expense-item">
-              <div class="expense">
-                <h2 class="semi-weighted-text">${item.Title}</h2>
-                <p class="normal-text">${item.date}</p>
-              </div>
-              <div class="amount">
-                <h2 class="semi-weighted-text">$${item.Amount}</h2>
-              </div>
-        </div>
-      `
+        displayHtmlExpenseItem(item)
       );
     }
   });
@@ -377,22 +335,7 @@ monthButton.addEventListener("click", function (e) {
     ) {
       expenseList.insertAdjacentHTML(
         "afterbegin",
-        `
-        <div class="expense-container" id = "${item.id}">
-        <div class="modify-icon">
-        <a href="#" class="edit-icon"><i class="fa-solid fa-pen-to-square" style="color: #254b8e;"></i></a>
-        <a href="#" class="delete-icon"><i class="fa-solid fa-trash-can" style="color: #e75a61;"></i></a>
-        </div>
-      <div class="expense-item">
-              <div class="expense">
-                <h2 class="semi-weighted-text">${item.Title}</h2>
-                <p class="normal-text">${item.date}</p>
-              </div>
-              <div class="amount">
-                <h2 class="semi-weighted-text">$${item.Amount}</h2>
-              </div>
-        </div>
-      `
+        displayHtmlExpenseItem(item)
       );
     }
   });
@@ -429,22 +372,7 @@ weekButton.addEventListener("click", function (e) {
     if (weekArr.includes(item.date)) {
       expenseList.insertAdjacentHTML(
         "afterbegin",
-        `
-        <div class="expense-container">
-        <div class="modify-icon">
-        <a href="#" class="edit-icon"><i class="fa-solid fa-pen-to-square car" style="color: #254b8e;"></i></a>
-        <a href="#" class="delete-icon"><i class="fa-solid fa-trash-can" style="color: #e75a61;"></i></a>
-        </div>
-      <div class="expense-item">
-              <div class="expense">
-                <h2 class="semi-weighted-text">${item.Title}</h2>
-                <p class="normal-text">${item.date}</p>
-              </div>
-              <div class="amount">
-                <h2 class="semi-weighted-text">$${item.Amount}</h2>
-              </div>
-        </div>
-      `
+        displayHtmlExpenseItem(item)
       );
     }
   });
@@ -453,27 +381,98 @@ weekButton.addEventListener("click", function (e) {
 displayExpenseList();
 
 ////////////// Edit and modify expense //////////////////
-let editId = 0;
+
+let activeId = 0;
 const modifyIcon = document.querySelectorAll(".modify-icon");
 const editExpenseAmount = document.querySelector("#edit-expense-amount");
 const editExpenseTitle = document.querySelector("#edit-expense-title");
+const editExpenseDate = document.querySelector("#edit-expense-date");
 
-modifyIcon.forEach((item) => {
-  item.addEventListener("click", function (e) {
-    e.preventDefault();
+expenseList.addEventListener("click", (e) => {
+  e.preventDefault();
+  let targetEl = e.target;
 
-    if (e.target.classList.contains("fa-pen-to-square")) {
-      editExpenseModal.classList.remove("hidden");
-      overlay.classList.remove("hidden");
-      console.log(e.target);
-      const parentContainer = e.target.closest(".expense-container");
-      console.log(parentContainer);
-    }
-  });
+  if (targetEl.classList.contains("fa-pen-to-square")) {
+    editExpenseModal.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+
+    const parentContainer = e.target.closest(".expense-container");
+    // console.log(parentContainer);
+    activeId = Number(parentContainer.getAttribute("id"));
+
+    const lastChildEl = parentContainer.lastElementChild;
+    const modifyExpenseValue = +lastChildEl
+      .querySelector(".expense-item__Amount")
+      .textContent.slice(1);
+
+    totalExpense -= modifyExpenseValue;
+
+    editExpenseAmount.value = modifyExpenseValue;
+    editExpenseTitle.value = lastChildEl.querySelector(
+      ".expense-item__Title"
+    ).textContent;
+
+    editExpenseDate.valueAsDate = new Date(
+      lastChildEl.querySelector(".expense-item__date").textContent
+    );
+  }
+
+  if (targetEl.classList.contains("fa-trash-can")) {
+    const parentContainer = e.target.closest(".expense-container");
+    openDeleteModal();
+    activeId = Number(parentContainer.getAttribute("id"));
+  }
+});
+
+/////////////DELETE ICON//////////
+const deleteExpense = document.querySelector(".continue-btn");
+deleteExpense.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  const removeAmount = expenseArr.find((el) => el.id == activeId).Amount;
+  totalExpense -= Number(removeAmount);
+  const removeIndex = expenseArr.findIndex((el) => el.id == activeId);
+  expenseArr.splice(removeIndex, 1);
+  expenseValue.textContent = `${formatter.format(totalExpense)}`;
+
+  closeDeleteModal();
+  displayExpenseList();
 });
 
 /////////////// EDIT EXPENSE MODAL ////////////
 const editExpenseForm = document.querySelector(".edit-expense-form");
-// editExpenseForm.addEventListener("submit", function (e) {
-//   e.preventDefault();
-// });
+editExpenseForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const removeAmount = expenseArr.find((el) => el.id == activeId).Amount;
+  totalExpense =
+    totalExpense > removeAmount ? (totalExpense -= Number(removeAmount)) : 0;
+  const removeIndex = expenseArr.findIndex((el) => el.id == activeId);
+
+  expenseArr.splice(removeIndex, 1);
+
+  const editExpenseAmountValue = +editExpenseAmount.value;
+  const editExpenseTitleValue = editExpenseTitle.value;
+
+  totalExpense += editExpenseAmountValue;
+
+  const editExpenseDateValue = new Date(
+    editExpenseDate.value
+  ).toLocaleDateString("en-us", {
+    year: "numeric",
+    day: "numeric",
+    month: "long",
+  });
+  const timeStamp = Math.floor(Math.random() * 100) + `${Date.now()}`.slice(-4);
+
+  let expenseItem = {
+    Title: editExpenseTitleValue,
+    Amount: editExpenseAmountValue,
+    date: editExpenseDateValue,
+    id: `${timeStamp}`,
+  };
+
+  expenseArr.unshift(expenseItem);
+  expenseValue.textContent = `${formatter.format(totalExpense)}`;
+  displayExpenseList();
+  closeEditExpenseModal();
+});
