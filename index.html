@@ -26,7 +26,7 @@
     <title>Vite App</title>
   </head>
   <body>
-    <section class="welcome--page hidden">
+    <section class="welcome--page">
       <div class="welcome--page_content container">
         <div class="welcome--page_image">
           <img src="img/undraw_instant_information_re_c5v5.svg" alt="" />
@@ -37,10 +37,12 @@
           </h1>
           <div class="welcome--page_textparagraph">
             <h2 class="semi-weighted-text">
-              Don't have an account yet? <a href="#"> Sign up here</a>
+              Don't have an account yet?
+              <a href="#" class="sign-up"> Sign up here</a>
             </h2>
             <h2 class="semi-weighted-text">
-              Already have an account? <a href="">Sign in here</a>
+              Already have an account?
+              <a href="#" class="sign-in">Sign in here</a>
             </h2>
           </div>
         </div>
@@ -70,6 +72,7 @@
             id="password"
             name="password"
             placeholder="Enter a 4 digit number"
+            maxlength="4"
           />
           <small></small>
         </div>
@@ -96,7 +99,8 @@
             type="number"
             id="login-password"
             name="login-assword"
-            placeholder="Enter your digit pin"
+            placeholder="Enter your 4 digit pin"
+            maxlength="4"
           />
           <small></small>
         </div>
@@ -105,11 +109,11 @@
         </div>
       </form>
     </section>
-    <main class="container homepage">
+    <main class="container homepage hidden">
       <header>
         <div class="welcome-div">
-          <h1 class="weighted-text">Hello, Esther</h1>
-          <p class="normal-text">Welcome back to your page</p>
+          <h1 class="weighted-text welcome-div__Name"></h1>
+          <p class="normal-text welcome-message"></p>
         </div>
         <nav>
           <ul>
@@ -132,29 +136,18 @@
       <div class="budget--summary">
         <div class="budget--summary_title">
           <h2 class="budget-timeframe semi-weighted-text">Monthly Budget</h2>
+          <h2 class="budget-exceeded"></h2>
           <p class="budget-timeframe-amount normal-text"></p>
         </div>
 
         <div class="budget--summary__progress">
+          <h2 class="budget-timeframe semi-weighted-text">percentage left:</h2>
           <div class="outer">
             <div class="inner">
-              <div id="budget-percent">65%</div>
+              <div id="budget-percent"></div>
             </div>
           </div>
-          <!-- <svg width="100px" height="100px">
-            <defs>
-              <linearGradient id="GradientColor">
-                <stop offset="0%" stop-color="#e91e63" />
-                <stop offset="100%" stop-color="#673ab7" />
-              </linearGradient>
-            </defs>
-            <circle cx="45" cy="45" r="36" stroke-linecap="round" />
-          </svg> -->
         </div>
-        <!-- <div class="budget--summary_amount">
-          <p class="expense-percent red-text">Expense: 0%</p>
-          <p class="budget-used normal-text"></p>
-        </div> -->
       </div>
       <div class="Expense-budget-entry">
         <button class="add-budget semi-weighted-text">Change Budget</button>
@@ -163,7 +156,7 @@
       </div>
       <div class="transaction">
         <div>
-          <h2 class="weighted-text">Transactions</h2>
+          <h2 class="weighted-text">Expenses</h2>
         </div>
         <div class="expense-search">
           <input
@@ -188,27 +181,7 @@
           <div class="amount">
             <h2 class="semi-weighted-text">$450</h2>
           </div>
-        </div>
-      </div>
-        
-        <div class="expense-item">
-          <div class="expense">
-            <h2 class="semi-weighted-text">Food</h2>
-            <p class="normal-text">14 April, 2019</p>
-          </div>
-          <div class="amount">
-            <h2 class="semi-weighted-text">$450</h2>
-          </div>
-        </div>
-        <div class="expense-item">
-          <div class="expense">
-            <h2 class="semi-weighted-text">Food</h2>
-            <p class="normal-text">14 April, 2019</p>
-          </div>
-          <div class="amount">
-            <h2 class="semi-weighted-text">$450</h2>
-          </div>
-        </div> -->
+        </div>-->
       </div>
     </main>
     <!-- Budget modal -->
@@ -334,6 +307,8 @@
         </form>
       </div>
     </section>
+
+    <!-- DELETE POPUP -->
     <div class="confirm-delete hidden">
       <div>
         <p>Are you sure you want to delete this item?</p>
@@ -343,6 +318,7 @@
         <button class="continue-btn">Continue</button>
       </div>
     </div>
+
     <div class="overlay hidden"></div>
     <script type="module" src="/main.js"></script>
   </body>

@@ -78,7 +78,6 @@ body {
 .welcome--page_text a {
   color: hsl(246, 73%, 33%);
   cursor: pointer;
-  /* text-decoration: line-through; */
 }
 .welcome--page_textparagraph {
   margin-top: 1rem;
@@ -140,8 +139,8 @@ body {
 
 /*************** MAIN PAGE *****************/
 .homepage {
-  opacity: 1;
-  transition: opacity 2s ease-in-out;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
 }
 .homepage.show {
   opacity: 1;
@@ -183,14 +182,14 @@ nav ul {
 .dashboard--budget {
   background-color: var(--Budget-dashboard-color);
   border-radius: 1rem;
-  padding: 2rem;
+  padding: 2rem 1rem;
   width: 50%;
   min-height: 2rem;
 }
 .dashboard--expense {
   background-color: var(--Expense-dashboard-color);
   border-radius: 1rem;
-  padding: 2rem;
+  padding: 2rem 1rem;
   width: 50%;
   min-height: 2rem;
 }
@@ -270,12 +269,16 @@ nav ul {
   padding: 1rem;
   margin-bottom: 1rem;
 }
-
+.budget--summary_title {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 .budget--summary__progress {
-  width: 90px;
-  height: 90px;
-  /* background-color: red; */
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: space-between;
 }
 .outer {
   width: 90px;
@@ -284,7 +287,8 @@ nav ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--light-blue);
+  background-image: conic-gradient(var(--light-blue) 360deg, white 362deg);
+  transition: background-image 2s ease-in-out;
   box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
     -6px 6px 10px -1px var(--background-body);
   border-radius: 50%;
@@ -296,7 +300,6 @@ nav ul {
   align-items: center;
   justify-content: center;
   background-color: white;
-  /* border: 1px solid red; */
   border-radius: 50%;
   box-shadow: inset 4px 4px 6px -1px var(--grey-text),
     inset -4px -4px 6px -1px rgba(255, 255, 255, 0.7),
@@ -307,19 +310,6 @@ nav ul {
   font-weight: 900;
 }
 
-circle {
-  fill: none;
-  stroke: url(#GradientColor);
-  stroke-width: 10px;
-  stroke-dasharray: 245;
-  stroke-dashoffset: 0;
-}
-
-svg {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
 /* ******MODAL ************** */
 .modal-section-budget,
 .modal-section-expense,
@@ -424,7 +414,6 @@ svg {
 }
 .confirm-delete button {
   color: #fff;
-  /* display: inline-block; */
   border: 0;
   width: 50%;
   border-radius: 0.6rem;
@@ -464,4 +453,10 @@ svg {
 }
 .hidden {
   display: none;
+}
+.budget-exceeded {
+  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  color: var(--red-text);
+  font-weight: 500;
+  font-style: italic;
 }

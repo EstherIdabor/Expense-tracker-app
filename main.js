@@ -1,3 +1,9 @@
+const welcomePage = document.querySelector(".welcome--page");
+const signUpLink = document.querySelector(".sign-up");
+const signInLink = document.querySelector(".sign-in");
+const welcomeMessage = document.querySelector(".welcome-message");
+const nameWelcome = document.querySelector(".welcome-div__Name");
+
 const registerForm = document.querySelector(".Registration-form");
 const firstName = document.querySelector("#fname");
 const lastName = document.querySelector("#lname");
@@ -13,11 +19,36 @@ const mainPage = document.querySelector(".homepage");
 
 let formControl = document.querySelectorAll(".form-control");
 
+const expenseValue = document.querySelector(".expense-value");
+const budgetDisplayValue = document.querySelector(".budget-value");
+const budgetTimeFrameAmount = document.querySelector(
+  ".budget-timeframe-amount"
+);
+let calcBudgetPerTimeframe;
+
 const formatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
 });
 
+let userObject = {};
+let expenseArr = [];
+let budgetFieldValue = 0;
+
+///////////////// WELCOME PAGE //////////////////////////////
+signUpLink.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  welcomePage.classList.add("hidden");
+  registration.classList.remove("hidden");
+});
+
+signInLink.addEventListener("click", function (e) {
+  e.preventDefault();
+
+  welcomePage.classList.add("hidden");
+  login.classList.remove("hidden");
+});
 //////////////// FORM VALIDATION ////////////////////////////
 
 formControl = Array.from(formControl);
@@ -54,7 +85,14 @@ const hideError = function (input) {
   input.nextElementSibling.innerHTML = "";
 };
 
-const expenseObject = {};
+////////////SET LOCAL STORAGE //////////
+const setUserLocalStorage = function () {
+  localStorage.setItem("userObject", JSON.stringify(userObject));
+};
+
+const setExpenseLocalStorage = function () {
+  localStorage.setItem("expenseArr", JSON.stringify(expenseArr));
+};
 ////////// REGISTRATION  ///////////////////
 
 const checkRegistrationInput = function () {
@@ -70,10 +108,15 @@ registerForm.addEventListener("submit", function (e) {
   if (!formControl.some((el) => el.classList.contains("error"))) {
     registration.classList.add("hidden");
     mainPage.classList.remove("hidden");
+    welcomeMessage.textContent = "Welcome to your page";
     setTimeout(() => mainPage.classList.add("show"), 500);
-    expenseObject.Name = firstName.value;
-    expenseObject.Surname = lastName.value;
-    console.log(expenseObject);
+    nameWelcome.textContent = `Hello, ${firstName.value}`;
+    userObject.Name = firstName.value;
+    userObject.Surname = lastName.value;
+    userObject.Fullname = (firstName.value + lastName.value).toLowerCase();
+    userObject.Password = +registerPassword.value;
+
+    setUserLocalStorage();
   }
 });
 
@@ -88,10 +131,36 @@ loginForm.addEventListener("submit", function (e) {
   e.preventDefault();
   checkLoginInput();
 
-  if (!formControl.some((el) => el.classList.contains("error"))) {
+  userObject = JSON.parse(localStorage.getItem("userObject"));
+  expenseArr = JSON.parse(localStorage.getItem("expenseArr"));
+
+  const storedFullName = userObject.Fullname;
+  const storedPin = userObject.Password;
+  totalExpense = userObject.Totalexpense ? userObject.Totalexpense : 0;
+  budgetFieldValue = userObject.Budget ? userObject.Budget : 0;
+
+  if (
+    !formControl.some((el) => el.classList.contains("error")) &&
+    fullName.value.replace(/\s/g, "").toLowerCase() == storedFullName &&
+    +loginPassword.value == +storedPin
+  ) {
     login.classList.add("hidden");
     mainPage.classList.remove("hidden");
+    welcomeMessage.textContent = "Welcome back to your page";
+    nameWelcome.textContent = `Hello, ${userObject.Name}`;
     setTimeout(() => mainPage.classList.add("show"), 500);
+
+    calcBudgetPerTimeframe =
+      userObject.BudgetTimeframe == "Monthly"
+        ? `${formatter.format(+budgetFieldValue / 4)}/Week`
+        : `${formatter.format(+budgetFieldValue / 12)}/Month`;
+
+    expenseValue.textContent = `${formatter.format(totalExpense)}`;
+    budgetDisplayValue.textContent = formatter.format(budgetFieldValue);
+    budgetTimeFrameAmount.textContent = calcBudgetPerTimeframe;
+
+    updateBudgetSummary();
+    displayExpenseList();
   }
 });
 
@@ -143,6 +212,7 @@ document.querySelector(".cancel-btn").addEventListener("click", function () {
   closeDeleteModal();
 });
 
+/////////OVERLAY///////////
 overlay.addEventListener("click", function () {
   closeBudgetModal();
   closeExpenseModal();
@@ -160,22 +230,18 @@ editExpenseCloseIcon.addEventListener("click", closeEditExpenseModal);
 
 ////////////////////////// MODAL FORMS /////////////////////////
 
-//////// BUDGET
+//////// BUDGET////////////////
 const budgetForm = document.querySelector(".budget-form");
 const budgetField = document.querySelector("#budget");
 const budgetFormControl = document.querySelector(".budget-form-control");
 
-const budgetDisplayValue = document.querySelector(".budget-value");
 const selectBox = document.querySelector(".select-box");
 const budgetTimeFrame = document.querySelector(".budget-timeframe");
-const budgetTimeFrameAmount = document.querySelector(
-  ".budget-timeframe-amount"
-);
-let budgetFieldValue = 0;
 
+////////// Add/Change budget /////////////////////
 budgetForm.addEventListener("submit", function (e) {
   e.preventDefault();
-  if (budgetField.value == 0) {
+  if (budgetField.value == "") {
     budgetFormControl.classList.add("error");
   } else {
     budgetFormControl.classList.remove("error");
@@ -192,17 +258,17 @@ budgetForm.addEventListener("submit", function (e) {
     budgetTimeFrameAmount.textContent = calcBudgetPerTimeframe;
 
     closeBudgetModal();
+    updateBudgetSummary();
+    userObject.Budget = budgetFieldValue;
+    userObject.BudgetTimeframe = selectBoxValue;
+    setUserLocalStorage();
   }
 });
 
-// ////////////////EXPENSES
+// ////////////////EXPENSES //////////////////////////////
 const expenseList = document.querySelector(".Expense-list");
-const expenseDate = document.querySelector("#expense-date");
-expenseDate.valueAsDate = new Date();
-const expenseValue = document.querySelector(".expense-value");
 
-// Tentative fake data/////////////
-let expenseArr = [];
+/////// Expense data /////////////
 
 const displayHtmlExpenseItem = function (item) {
   let htmlExpenseItem = `
@@ -235,17 +301,50 @@ const displayExpenseList = function () {
   expenseList.innerHTML = expenseArrHtml;
 };
 
-/////////////////////// EXPENSE MODAL////////////////
 let totalExpense = 0;
+/////////////UPDATE BUDGET REMAINING/ BDGET SUMMARY/////////
+const displayBudgetPercent = document.querySelector("#budget-percent");
+const progressCircle = document.querySelector(".outer");
+const displayBudgetExceeded = document.querySelector(".budget-exceeded");
 
+function updateBudgetSummary() {
+  let percentageExpenses = `${Math.round(
+    ((budgetFieldValue - totalExpense) / budgetFieldValue) * 100
+  )}%`;
+  if (!budgetFieldValue == 0) {
+    displayBudgetPercent.textContent = percentageExpenses;
+
+    let colorDeg = ((budgetFieldValue - totalExpense) / budgetFieldValue) * 360;
+
+    progressCircle.style.backgroundImage = `conic-gradient(var(--light-blue) ${
+      colorDeg - 2
+    }deg, white ${colorDeg + 2}deg)`;
+  }
+
+  if (totalExpense > budgetFieldValue) {
+    percentageExpenses = `0%`;
+    displayBudgetPercent.textContent = percentageExpenses;
+
+    let colorDeg = 0;
+
+    progressCircle.style.backgroundImage = `conic-gradient(var(--light-blue) ${
+      colorDeg - 2
+    }deg, white ${colorDeg + 2}deg)`;
+    displayBudgetExceeded.textContent = "Budget exceeded";
+  } else {
+    displayBudgetExceeded.textContent = "";
+  }
+}
+
+/////////////////////// EXPENSE MODAL////////////////
 const expenseForm = document.querySelector(".expense-form");
 const expenseAmount = document.querySelector("#expense-amount");
 const expenseTitle = document.querySelector("#expense-title");
+const expenseDate = document.querySelector("#expense-date");
+expenseDate.valueAsDate = new Date();
 
-const expensePercent = document.querySelector(".expense-percent");
-const budgetUsed = document.querySelector(".budget-used");
+// Adding an Expense//////////////////////////////////
 
-// Adding an Expense
 expenseForm.addEventListener("submit", function (e) {
   e.preventDefault();
   const derivedDate = new Date(expenseDate.value).toLocaleDateString("en-us", {
@@ -267,23 +366,23 @@ expenseForm.addEventListener("submit", function (e) {
   };
 
   expenseArr.unshift(expenseItem);
+  updateBudgetSummary();
 
-  let percentageExpenses = `${Math.round(
-    (totalExpense / budgetFieldValue) * 100
-  )}%`;
-  if (!budgetFieldValue == 0) {
-    expensePercent.textContent = `Expense: ${percentageExpenses} `;
-    budgetUsed.textContent = `of ${formatter.format(budgetFieldValue)} used`;
-  }
   expenseList.insertAdjacentHTML(
     "afterbegin",
     displayHtmlExpenseItem(expenseItem)
   );
   expenseValue.textContent = `${formatter.format(totalExpense)}`;
   closeExpenseModal();
-});
 
-// Budget Summary
+  expenseTitle.value = "";
+  expenseAmount.value = "";
+  expenseDate.valueAsDate = new Date();
+
+  userObject.Totalexpense = +totalExpense;
+  setUserLocalStorage();
+  setExpenseLocalStorage();
+});
 
 // FILTER/SEARCH EXPENSE
 const searchInput = document.querySelector("#search-input");
@@ -304,7 +403,7 @@ searchInput.addEventListener("input", function (e) {
   });
 });
 
-// TIMEFRAME
+/////////////// SORT EXPENSE ACCORDING TO CHOSEN TIMEFRAME ////////////
 const yearButton = document.querySelector(".year");
 const monthButton = document.querySelector(".month");
 const weekButton = document.querySelector(".week");
@@ -378,12 +477,10 @@ weekButton.addEventListener("click", function (e) {
   });
 });
 
-displayExpenseList();
-
-////////////// Edit and modify expense //////////////////
+////////////// Edit and DELETE expense //////////////////
 
 let activeId = 0;
-const modifyIcon = document.querySelectorAll(".modify-icon");
+
 const editExpenseAmount = document.querySelector("#edit-expense-amount");
 const editExpenseTitle = document.querySelector("#edit-expense-title");
 const editExpenseDate = document.querySelector("#edit-expense-date");
@@ -397,15 +494,12 @@ expenseList.addEventListener("click", (e) => {
     overlay.classList.remove("hidden");
 
     const parentContainer = e.target.closest(".expense-container");
-    // console.log(parentContainer);
     activeId = Number(parentContainer.getAttribute("id"));
 
     const lastChildEl = parentContainer.lastElementChild;
     const modifyExpenseValue = +lastChildEl
       .querySelector(".expense-item__Amount")
       .textContent.slice(1);
-
-    totalExpense -= modifyExpenseValue;
 
     editExpenseAmount.value = modifyExpenseValue;
     editExpenseTitle.value = lastChildEl.querySelector(
@@ -433,19 +527,25 @@ deleteExpense.addEventListener("click", function (e) {
   totalExpense -= Number(removeAmount);
   const removeIndex = expenseArr.findIndex((el) => el.id == activeId);
   expenseArr.splice(removeIndex, 1);
+  updateBudgetSummary();
   expenseValue.textContent = `${formatter.format(totalExpense)}`;
 
   closeDeleteModal();
   displayExpenseList();
+
+  userObject.Totalexpense = +totalExpense;
+  setUserLocalStorage();
+  setExpenseLocalStorage();
 });
 
 /////////////// EDIT EXPENSE MODAL ////////////
 const editExpenseForm = document.querySelector(".edit-expense-form");
 editExpenseForm.addEventListener("submit", function (e) {
   e.preventDefault();
+
   const removeAmount = expenseArr.find((el) => el.id == activeId).Amount;
-  totalExpense =
-    totalExpense > removeAmount ? (totalExpense -= Number(removeAmount)) : 0;
+
+  totalExpense = totalExpense - removeAmount;
   const removeIndex = expenseArr.findIndex((el) => el.id == activeId);
 
   expenseArr.splice(removeIndex, 1);
@@ -472,7 +572,13 @@ editExpenseForm.addEventListener("submit", function (e) {
   };
 
   expenseArr.unshift(expenseItem);
+
+  updateBudgetSummary();
   expenseValue.textContent = `${formatter.format(totalExpense)}`;
   displayExpenseList();
   closeEditExpenseModal();
+
+  userObject.Totalexpense = +totalExpense;
+  setUserLocalStorage();
+  setExpenseLocalStorage();
 });
